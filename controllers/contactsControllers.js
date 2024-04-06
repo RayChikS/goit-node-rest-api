@@ -6,6 +6,7 @@ import {
   removeContact,
   addContact,
   updateById,
+  updateStatusContact,
 } from "../services/contactsServices.js";
 import catchAsync from "../helpers/catchAsync.js";
 import HttpError from "../helpers/HttpError.js";
@@ -75,4 +76,21 @@ export const updateContact = catchAsync(async (req, res) => {
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
+});
+
+export const updateContactFavorite = catchAsync(async (req, res) => {
+  const { contactId } = req.params;
+  const { favorite } = req.body;
+
+  if (typeof favorite !== "boolean") {
+    throw HttpError(400, "Invalid value for favorite");
+  }
+
+  const updatedContact = await updateStatusContact(contactId, { favorite });
+
+  if (!updatedContact) {
+    throw HttpError(404, "Contact not found");
+  }
+
+  res.status(200).json(updatedContact);
 });
