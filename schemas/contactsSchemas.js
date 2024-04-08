@@ -9,10 +9,15 @@ export const createContactSchema = Joi.object({
     })
     .required(),
   phone: Joi.string().min(10).max(14).required(),
+  favorite: Joi.boolean(),
 });
 
 export const updateContactSchema = Joi.object({
   name: Joi.string(),
   email: Joi.string(),
   phone: Joi.string(),
+});
+
+export const updateStatusSchema = Joi.object({
+  favorite: Joi.boolean().required(),
 });
