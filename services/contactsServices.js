@@ -1,7 +1,7 @@
-import { Contact } from "../models/contactModel.js";
+import { Contact } from "../models/contact.js";
 
-export async function listContacts() {
-  const contacts = await Contact.find();
+export async function listContacts(owner) {
+  const contacts = await Contact.find({ owner }, "-createdAt -updatedAt");
   return contacts;
 }
 
@@ -15,8 +15,8 @@ export async function removeContact(contactId) {
   return deletedContact;
 }
 
-export async function addContact(data) {
-  const newContact = await Contact.create(data);
+export async function addContact(data, owner) {
+  const newContact = await Contact.create({ ...data, owner });
   return newContact;
 }
 
