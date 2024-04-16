@@ -10,7 +10,8 @@ import catchAsync from "../helpers/catchAsync.js";
 import HttpError from "../helpers/HttpError.js";
 
 export const getAllContacts = catchAsync(async (req, res) => {
-  const result = await listContacts();
+  const { _id: owner } = req.user;
+  const result = await listContacts(owner);
 
   res.status(200).json(result);
 });
@@ -38,7 +39,8 @@ export const deleteContact = catchAsync(async (req, res) => {
 });
 
 export const createContact = catchAsync(async (req, res) => {
-  const result = await addContact(req.body);
+  const { _id: owner } = req.user;
+  const result = await addContact(req.body, owner);
 
   res.status(201).json(result);
 });
