@@ -53,9 +53,8 @@ export const loginUser = catchAsync(async (req, res) => {
 
 export const logoutUser = catchAsync(async (req, res) => {
   const { _id } = req.user;
-  const newToken = "";
 
-  await deleteToken(_id, newToken);
+  await deleteToken(_id);
 
   res.status(204);
 });

@@ -8,7 +8,7 @@ export async function register(data) {
 }
 
 export async function checkEmail(data) {
-  const user = await User.findOne({ data });
+  const user = await User.findOne({ email: data });
   return user;
 }
 
@@ -30,11 +30,11 @@ export async function findUserById(id) {
 }
 
 export async function saveToken(id, token) {
-  const newUser = await User.findByIdAndUpdate(id, { token });
-  return newUser;
+  const result = await User.findByIdAndUpdate(id, { token });
+  return result;
 }
 
-export async function deleteToken(id, newToken) {
-  const newUser = await User.findByIdAndUpdate(id, { token: newToken });
-  return newUser;
+export async function deleteToken(id) {
+  const result = await User.findByIdAndUpdate(id, { token: "" });
+  return result;
 }
