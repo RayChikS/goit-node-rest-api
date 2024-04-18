@@ -56,7 +56,7 @@ export const logoutUser = catchAsync(async (req, res) => {
 
   await deleteToken(_id);
 
-  res.status(204);
+  res.status(204).json();
 });
 
 export const getCurrent = catchAsync(async (req, res) => {
