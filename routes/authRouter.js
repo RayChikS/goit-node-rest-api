@@ -1,23 +1,14 @@
-import express from "express";
-
-import validateBody from "../middlewares/validateBody.js";
-import { registerUserSchema, loginUserSchema } from "../schemas/userSchemas.js";
-import {
-  registerUser,
-  loginUser,
-  logoutUser,
-  getCurrent,
-} from "../controllers/usersControllers.js";
-import authenticate from "../middlewares/authMiddlewares.js";
+import express from 'express';
+import authControllers from '../controllers/authControllers.js';
+import { userSingupSinginSchema } from '../schemas/usersSchemas.js';
+import validateBody from '../decorators/validateBody.js';
+import authenticate from '../middlewares/authenticate.js';
 
 const authRouter = express.Router();
 
-authRouter.post("/register", validateBody(registerUserSchema), registerUser);
-
-authRouter.post("/login", validateBody(loginUserSchema), loginUser);
-
-authRouter.post("/logout", authenticate, logoutUser);
-
-authRouter.get("/current", authenticate, getCurrent);
+authRouter.post('/register', validateBody(userSingupSinginSchema), authControllers.singup);
+authRouter.post('/login', validateBody(userSingupSinginSchema), authControllers.singin);
+authRouter.get('/current', authenticate, authControllers.getCurrent);
+authRouter.post('/logout', authenticate, authControllers.logout);
 
 export default authRouter;

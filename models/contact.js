@@ -1,34 +1,47 @@
-import { model, Schema } from "mongoose";
-
-import handleMongooseError from "../helpers/handleMongooseError.js";
+import { Schema, model } from 'mongoose';
+import { emailRegexp } from '../constants/constants.js';
+import { phoneRegexp } from '../constants/contactsConstants.js';
+import { handleSaveError, setUpdateSetting } from './hooks.js';
 
 const contactSchema = new Schema(
   {
     name: {
       type: String,
-      required: [true, "Set name for contact"],
+      unique: true,
+      required: [true, 'Set name for contact'],
     },
     email: {
       type: String,
+      unique: true,
+      match: emailRegexp,
+      required: [true, 'Set email for contact'],
     },
     phone: {
       type: String,
+      unique: true,
+      match: phoneRegexp,
+      required: [true, 'Set phone for contact'],
     },
     favorite: {
       type: Boolean,
       default: false,
+      required: true,
     },
     owner: {
       type: Schema.Types.ObjectId,
-      ref: "user",
+      ref: 'user',
+      required: true,
     },
   },
-  {
-    timestamps: true,
-    versionKey: false,
-  }
+  { versionKey: false, timestamps: true }
 );
 
-contactSchema.post("save", handleMongooseError);
+contactSchema.pre('findOneAndUpdate', setUpdateSetting);
 
-export const Contact = model("contact", contactSchema);
+contactSchema.post('save', handleSaveError);
+
+contactSchema.post('findOneAndUpdate', handleSaveError);
+
+const Contact = model('contact', contactSchema);
+
+export default Contact;
