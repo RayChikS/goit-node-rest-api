@@ -1,31 +1,38 @@
-import { model, Schema } from "mongoose";
-
-import handleMongooseError from "../helpers/handleMongooseError.js";
+import { Schema, model } from 'mongoose';
+import { handleSaveError, setUpdateSetting } from './hooks.js';
+import { emailRegexp } from '../constants/constants.js';
 
 const userSchema = new Schema(
   {
     password: {
       type: String,
-      required: [true, "Set password for user"],
+      required: [true, 'Password is required'],
     },
     email: {
       type: String,
-      required: [true, "Email is required"],
+      match: emailRegexp,
       unique: true,
+      required: [true, 'Email is required'],
     },
     subscription: {
       type: String,
-      enum: ["starter", "pro", "business"],
-      default: "starter",
+      enum: ['starter', 'pro', 'business'],
+      default: 'starter',
     },
-    token: String,
+    token: {
+      type: String,
+      default: null,
+    },
   },
-  {
-    timestamps: true,
-    versionKey: false,
-  }
+  { versionKey: false, timeseries: true }
 );
 
-userSchema.post("save", handleMongooseError);
+userSchema.pre('findOneAndUpdate', setUpdateSetting);
 
-export const User = model("user", userSchema);
+userSchema.post('save', handleSaveError);
+
+userSchema.post('findOneAndUpdate', handleSaveError);
+
+const User = model('user', userSchema);
+
+export default User;

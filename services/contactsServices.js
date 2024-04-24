@@ -1,55 +1,26 @@
-import { Contact } from "../models/contact.js";
+import Contact from '../models/Contact.js';
 
-export async function listContacts(owner) {
-  const contacts = await Contact.find({ owner }, "-createdAt -updatedAt");
-  return contacts;
-}
+const listContacts = (filter = {}, setting = {}) =>
+  Contact.find(filter, '-createdAt -updatedAt', setting).populate('owner', 'email subscription');
 
-export async function getContactById(contactId, owner) {
-  const contact = await Contact.findOne({
-    _id: contactId,
-    owner: owner,
-  });
-  return contact || null;
-}
+const countContacts = filter => Contact.countDocuments(filter);
 
-export async function removeContact(contactId, owner) {
-  const deletedContact = await Contact.findOneAndDelete({
-    _id: contactId,
-    owner: owner,
-  });
-  return deletedContact;
-}
+const addContact = data => Contact.create(data);
 
-export async function addContact(data, owner) {
-  const newContact = await Contact.create({ ...data, owner });
-  return newContact;
-}
+const getContactByFilter = filter => Contact.findOne(filter);
 
-export async function updateById(contactId, owner, data) {
-  const updatedContact = await Contact.findOneAndUpdate(
-    {
-      _id: contactId,
-      owner: owner,
-    },
-    data,
-    {
-      new: true,
-    }
-  );
-  return updatedContact;
-}
+const updateContactByFilter = (filter, data) => Contact.findOneAndUpdate(filter, data);
 
-export async function updateStatusContact(contactId, owner, body) {
-  const updatedContact = await Contact.findOneAndUpdate(
-    {
-      _id: contactId,
-      owner: owner,
-    },
-    body,
-    {
-      new: true,
-    }
-  );
-  return updatedContact;
-}
+const removeContactByFilter = filter => Contact.findOneAndDelete(filter);
+
+const updateContactStatusByFilter = (filter, data) => Contact.findOneAndUpdate(filter, data);
+
+export default {
+  listContacts,
+  countContacts,
+  addContact,
+  getContactByFilter,
+  updateContactByFilter,
+  removeContactByFilter,
+  updateContactStatusByFilter,
+};
